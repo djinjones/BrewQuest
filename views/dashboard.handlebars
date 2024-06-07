@@ -1,0 +1,23 @@
+<section class="container" style="width: 95vw; height: 60vh; overflow: auto;">
+{{#if loggedIn}}
+  <section>
+    <h2>Currently logged in as: {{user}}</h2>
+  </section>  
+  {{#if posts.length}}
+    {{#each posts as |post|}}
+      {{> dashboard-post}}
+    {{/each}}
+  {{else}}
+    {{> nothings-here}}
+  {{/if}}
+  {{> delete-popup}}
+{{else}}
+<section style="display: flex; font-size: 3rem; justify-content: center; align-items center">
+  <a href="/login" >You must login first to view this page</a>
+</section>
+{{/if}}
+<div style="border: black, 1px, solid; background-color: grey; color: black;" onmouseover="this.style.color='white'; this.style.background-color: black;" onmouseout="this.style.color='black'; this.style.background-color: grey;">
+<a href="/new">Create new post</a>
+</div>
+</section>
+<script src="./js/delete.js"></script>

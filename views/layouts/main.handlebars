@@ -2,41 +2,47 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fund My Project!</title>
-  <link rel="stylesheet" href="/css/jass.css">
-  <link rel="stylesheet" href="/css/style.css">
+  <title>Tech Blog</title>
+  <link rel="stylesheet" type="text/css" href="/css/jass.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 
 <body>
-  <div class="flex-column justify-space-around">
-    <header class="display-flex justify-space-between align-center p-2">
-      <h1>
-        <span role="img" aria-label="money">💸</span>
-        <a href="/">Fund My Project!</a>
-      </h1>
-      <nav>
-        <!-- Conditionally render login or logout links -->
-        {{#if logged_in}}
-        <a href="/profile">profile</a> |
-        <button class="no-button" id="logout">logout</button>
-        {{else}}
-        <a href="/login">login</a>
-        {{/if}}
-      </nav>
-    </header>
-    <main class="container container-fluid mt-5">
-      <!-- Render the sub layout -->
-      {{{ body }}}
-    </main>
-    <footer>
-      
+  <header>
+    <h1>Tech Blog</h1>
+    
+  </header>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/dashboard" style="color: black; hover: {color: white;}">Dashboard</a>
+    {{#if loggedIn}}
+    <button id="logout" class="btn-no-style">Logout</button>
+    {{else}}
+    <a href="/login">Login</a>
+    {{/if}}
+  </nav>
+  <main>
+    <div style="display: flex; justify-content: center; align-items: center; width: 100vw; height: 90px; border: black 1px solid; background: var(--light);">
+      <h2 style="font-size: 4rem;">What's on your mind?</h2>
+    </div>
+    <div class="blogs"  style="width: 95vw; height: 60vh; overflow: auto; display: flex; justify-content: center;">
+      {{{body}}}
+    </div>
+  </main>
+    <footer style="display: flex; flex-direction: column; align-items: center;">
+        <hr style="width: 90vw">
+        <section id="con" class="contact" style="display: flex; flex-direction: column; align-items: center;">
+            <h4>Contact</h4>
+            <div style="display: flex; flex-direction: row; justify-content: center;">
+            <a style="text-decoration: none; padding: 10px" href="https://djinjones.github.com">Github</a>
+          </div>
+        </section>
+        <p>Designed with ❤️ from Dan Jones</p>
     </footer>
-  </div>
 
-  <!-- Render script for logged in users only -->
-  {{#if logged_in}}
+  {{#if loggedIn}}
   <script src="/js/logout.js"></script>
   {{/if}}
 </body>
