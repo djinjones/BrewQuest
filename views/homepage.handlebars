@@ -1,3 +1,5 @@
+<div id="map" style="height: 250px; width: 100%; margin-bottom: 20px;"></div>
+
 <section style="display: flex; flex-direction: column; justify-content: center;">
 {{#if loggedIn}}
     <h4>Currently logged in as: {{user}}</h4>
@@ -18,3 +20,4 @@
 </section>
 {{/if}}
 </section>
+<script src="https://maps.googleapis.com/maps/api/js?key={{apiKey}}&callback=initMap" async defer></script>  <script src="/js/map.js"></script>
