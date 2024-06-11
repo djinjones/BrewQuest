@@ -2,12 +2,19 @@
 
 <section class="card blog-post" data-id="{{id}}" style="width: 80vw">
   <div class="card-header" style="display: flex; flex-wrap: wrap">
-  <h2 style="margin-left: 7px; margin-right: auto;">{{title}}</h2>
-  <p style="margin-right: 7px; margin-left: auto;">By: {{user}}</p>
+    <h2 style="margin-left: 7px; margin-right: auto;">{{title}}</h2>
+    <p style="margin-right: 7px; margin-left: auto;">By: {{user}}</p>
   </div>
   <div class="card-body post-content">
-    <p>{{content}}</p>
-
+   <p>{{content}}</p>
+    <h4>Beer Style:</h4>
+    <p>{{style}}</p>
+    <h4>Tasting Notes:</h4>
+    <p>{{tastingNotes}}</p>
+    <h4>Brewery Information:</h4>
+    <p>{{brewery}}</p>
+    <h4>ABV:</h4> 
+    <p>{{abv}}%</p> 
   </div>
   <div class="comment-section">
     <!-- Existing comments will be appended here -->
