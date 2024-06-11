@@ -15,6 +15,7 @@ router.get('/', async (req, res) => {
       );
       res.render('homepage', {
           posts, user, showDeleteButton: false, loggedIn: req.session.loggedIn,
+          apiKey: process.env.GOOGLE_MAPS_API_KEY,
       });
   
   } catch (err) {
