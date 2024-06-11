@@ -1,9 +1,9 @@
 :root {
-  --primary: rgb(0, 0, 0);
-  --secondary: #bebaf3;
-  --tertiary: #3a305e;
-  --quatrinary: #6884a3;
-  --light: #d0e8ff;
+  --primary: #ffffe6(0, 0, 0);
+  --secondary: #d6d6af ;
+  --tertiary: #b65b05;
+  --quatrinary: #0c8d9e;
+  --light: #ffffe6;
   --dark: #0e0c24;
   --error: rgb(255, 104, 67);
   --border-radius: 0.3rem;
@@ -16,7 +16,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   justify-content: flex-start;
-  background-color: var(--quatrinary);
+  background-color: #ffffe6; /* Updated background color */
 }
 
 a {
@@ -65,7 +65,7 @@ nav a {
 .post-content {
   margin-bottom: 16px;
   padding: 16px;
-  background-color: #b7a8fc;
+  background-color: #d6d6af;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
 }
@@ -79,7 +79,7 @@ nav a {
 
 /* Style for individual comments */
 .comment-section p {
-  background-color: #9796fc;
+  background-color: #d6d6af;
   border-radius: 4px;
   padding: 8px;
   margin: 8px 0;
@@ -89,7 +89,7 @@ nav a {
 /* Style for the comment input */
 .comment-input {
   width: 100%;
-  border: 1px solid #9dafb3;
+  border: 1px solid #000607;
   border-radius: 4px;
   padding: 8px;
   margin-top: 8px;
@@ -99,7 +99,7 @@ nav a {
 
 /* Style for the comment button */
 .commentBtn {
-  background-color: #007bff;
+  background-color: #b65b05;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -111,14 +111,13 @@ nav a {
 
 /* Hover effect for the comment button */
 .commentBtn:hover {
-  background-color: #0056b3;
+  background-color: #b65b05;
 }
 
 nav a:hover {
   color: var(--secondary);
   background-color: var(--dark);
 }
-
 
 .gallery {
   flex: 4;
@@ -178,7 +177,7 @@ img {
   border-radius: var(--border-radius);
   border-style: double;
   border-width: thick;
-  background-color: #577a7c;
+  background-color: #404747;
   color: var(--light);
 }
 
