@@ -1,3 +1,5 @@
+<div id="map" style="height: 250px; width: 100%; margin-bottom: 20px;"></div>
+
 <section style="display: flex; flex-direction: column; justify-content: center;">
 {{#if loggedIn}}
     <h4>Currently logged in as: {{user}}</h4>
@@ -12,7 +14,10 @@
   {{> delete-popup}}
 {{else}}
 <section style="display: flex; font-size: 3rem; justify-content: center; align-items center">
+
   <a href="/login" >You must login first to view this page</a>
+
 </section>
 {{/if}}
 </section>
+<script src="https://maps.googleapis.com/maps/api/js?key={{apiKey}}&callback=initMap" async defer></script>  <script src="/js/map.js"></script>
