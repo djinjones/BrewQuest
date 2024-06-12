@@ -26,11 +26,11 @@ BlogPost.init(
         key: 'username',
       },
     },
-    breweryId: {
-      type: DataTypes.STRING,
+    brewery_id: {
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'brewery',
+        model: 'Brewery',
         key: 'id'
       }
     }

@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initMap();
 });
 
+
+
 function initMap() {
   // Default location (if Geolocation fails)
   const defaultLocation = { lat: -34.397, lng: 150.644 };
@@ -106,6 +108,8 @@ async function getNearBreweries(currentCoords) {
             <p>Country: ${brewery.country}</p>
             <p>Phone: ${brewery.phone}</p>
             <p>Website: <a href="${brewery.website_url}" target="_blank">${brewery.website_url}</a></p>
+            <button class="review-button" data-brewery-id="${brewery.id}">Leave a Review</button>
+            <div class="reviews" data-review-id="${brewery.id}"></div>
           </div>
         `,
       });
@@ -146,6 +150,8 @@ function displayBreweriesList(data) {
       <p>Country: ${brewery.country}</p>
       <p>Phone: ${brewery.phone}</p>
       <p>Website: <a href="${brewery.website_url}" target="_blank">${brewery.website_url}</a></p>
+      <button class="review-button" data-brewery-id="${brewery.id}">Leave a Review</button>
+    </div>
     `;
 
     breweryInfo.addEventListener('click', () => {
@@ -166,7 +172,79 @@ function closeAllInfoWindows() {
   infoWindows.forEach(infoWindow => infoWindow.close());
 }
 
-  
+async function leaveReview(breweryId, rating, title, review) {
+    try {
+        const response = await fetch('/api/blogs', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                breweryId: breweryId,
+                // rating: rating,
+                title: title,
+                content: review,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Optionally, handle successful review submission (e.g., display a message)
+        console.log('Review submitted successfully!');
+    } catch (err) {
+        console.error('Error submitting review:', err);
+    }
+}
+
+function openReviewModal(breweryId) {
+    const modal = document.getElementById('reviewModal');
+    const submitReviewButton = document.getElementById('submitReview');
+
+    // Set the brewery ID in a data attribute of the modal
+    modal.setAttribute('data-brewery-id', breweryId);
+
+    // Show the modal
+    modal.style.display = 'block';
+
+    // Add event listener to the submit review button
+    submitReviewButton.addEventListener('click', () => {
+        const rating = document.getElementById('rating').value;
+        const title = document.getElementById('title').value;
+        const review = document.getElementById('review').value;
+
+        // Submit the review
+        leaveReview(breweryId, rating, title, review);
+
+        // Close the modal after submitting the review
+        modal.style.display = 'none';
+
+        // Clear input fields in the modal
+        document.getElementById('rating').value = '';
+        document.getElementById('title').value = '';
+        document.getElementById('review').value = '';
+    });
+}
+
+document.getElementById('map').addEventListener('click', function(event) {
+    // Check if the clicked element is a review button
+    if (event.target.classList.contains('review-button')) {
+        // Get the brewery ID from the data attribute
+        const breweryId = event.target.getAttribute('data-brewery-id');
+        
+        // Open the review modal
+        openReviewModal(breweryId);
+    }
+});
+
+function closeReviewModal() {
+    const modal = document.getElementById('reviewModal');
+    modal.style.display = 'none';
+}
+
+// Event listener for the close button on the modal
+document.querySelector('.close').addEventListener('click', closeReviewModal);
 // var marker = new google.maps.Marker({
 //     position: location,
 //     map: map,

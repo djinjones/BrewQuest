@@ -7,19 +7,22 @@ router.post('/', async (req, res) => {
     if (req.session.loggedIn) {
     const author = await req.session.username;
     
-    const {title, content} = req.body;
+    const {brewery_id, title, content} = req.body;
 
     const newPostData = {
+        brewery_id,
         title,
         content,
         author
     };
 
-    const newPost =await BlogPost.create(newPostData);
+    // const newPost =
     
-    res.render('homepage', {
-        newPost, loggedIn: req.session.loggedIn, showDeleteButton: false,
-    })
+    await BlogPost.create(newPostData);
+    
+    // res.render('homepage', {
+    //     newPost, loggedIn: req.session.loggedIn, showDeleteButton: false,
+    // })
     } else {
         res.render('login')
     }

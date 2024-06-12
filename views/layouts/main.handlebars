@@ -28,6 +28,19 @@
     <div style="display: flex; justify-content: center; align-items: center; width: 100vw; height: 90px; border: black 1px solid; background: var(--light);">
       <h2 style="font-size: 4rem;">What's Brewing?</h2>
     </div>
+    <div  id="reviewModal" class="modal">
+    <div class="modal-content">
+    <span class="close" id="close-modal">&times;</span>
+    <h2>Leave a Review!</h2>
+    {{!-- <label for="rating">Rating (1-5):</label>
+    <input type="number" id="rating" name="rating" min="1" max="5"> --}}
+    <label class="title-label" for="title">Title:</label>
+    <input class="title-input" type="text" id="title" name="title">
+    <label class="review-label" for="review">Review:</label>
+    <textarea class="review-input" id="review" name="review" maxlength="400"></textarea>
+    <button id="submitReview">Submit Review</button>
+  </div>
+</div>
     <div class="blogs">
       {{{body}}}
     </div>
@@ -40,7 +53,7 @@
             <a style="text-decoration: none; padding: 10px" href="https://djinjones.github.com">Github</a>
           </div>
         </section>
-        <p>Designed with ❤️ from Dan Jones</p>
+        <p>Designed with ❤️ from Coders Anonymous</p>
     </footer>
 
   {{#if loggedIn}}
