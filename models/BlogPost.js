@@ -26,6 +26,14 @@ BlogPost.init(
         key: 'username',
       },
     },
+    breweryId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      references: {
+        model: 'brewery',
+        key: 'id'
+      }
+    }
   },
   {
     sequelize,

@@ -30,13 +30,13 @@ Comment.belongsTo(User, {
   foreignKey: 'username',
 });
 
-Brewery.hasMany(Comment, {
-  foreignKey: 'postId',
+Brewery.hasMany(BlogPost, {
+  foreignKey: 'breweryId',
   onDelete: 'CASCADE',
 });
 
-Comment.belongsTo(Brewery, {
-  foreignKey: 'postId',
+BlogPost.belongsTo(Brewery, {
+  foreignKey: 'breweryId',
 });
 
 module.exports = { User, BlogPost, Comment, Brewery };

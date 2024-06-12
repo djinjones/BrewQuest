@@ -97,7 +97,7 @@ router.post('/', async (req, res) => {
         // Perform a raw SQL query to find breweries within the specified radius
         const breweries = await Brewery.sequelize.query(
             `SELECT b.*, d.distance
-            FROM "Breweries" b
+            FROM "Brewery" b
             INNER JOIN (
               SELECT id, (
                 ${earthRadius} * acos(
@@ -105,7 +105,7 @@ router.post('/', async (req, res) => {
                   sin(radians(CAST(:latitude AS float))) * sin(radians(CAST(latitude AS float)))
                 )
               ) AS distance
-              FROM "Breweries"
+              FROM "Brewery"
             ) d ON b.id = d.id
             WHERE d.distance < :radius
             ORDER BY d.distance`,
@@ -179,3 +179,6 @@ router.post('/', async (req, res) => {
     });
 
 module.exports = router;
+
+
+// Breweries to omit: Fermaentra,
