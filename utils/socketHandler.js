@@ -4,13 +4,17 @@ const socketHandler = (server) => {
     io.on('connection', (socket) => {
         console.log('a user connected');
 
-        // Handle incoming chat messages
+        socket.on('joinChat', (username) => {
+            socket.username = username;
+            io.emit('chatMessage', `${username} has joined the chat`);
+        });
+
         socket.on('chatMessage', (msg) => {
-            io.emit('chatMessage', msg); // Broadcast the message to all connected clients
+            io.emit('chatMessage', `${socket.username}: ${msg}`);
         });
 
         socket.on('disconnect', () => {
-            console.log('user disconnected');
+            io.emit('chatMessage', `${socket.username} has left the chat`);
         });
     });
 

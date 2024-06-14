@@ -1,0 +1,16 @@
+<div id="chat-icon">
+  💬
+</div>
+
+<div id="chat-window" class="hidden">
+  <div id="chat-section">
+    <!-- Existing messages can be displayed here -->
+  </div>
+  <form id="chat-form">
+    <input type="text" id="message-input" required>
+    <button type="submit">Send Message</button>
+  </form>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/chat.js"></script>
