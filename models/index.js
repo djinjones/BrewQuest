@@ -31,12 +31,13 @@ Comment.belongsTo(User, {
 });
 
 Brewery.hasMany(BlogPost, {
-  foreignKey: 'breweryId',
+  as: 'blogs',
+  foreignKey: 'brewery_id',
   onDelete: 'CASCADE',
 });
 
 BlogPost.belongsTo(Brewery, {
-  foreignKey: 'breweryId',
+  foreignKey: 'brewery_id',
 });
 
 module.exports = { User, BlogPost, Comment, Brewery };
