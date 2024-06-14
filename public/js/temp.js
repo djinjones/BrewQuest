@@ -6,14 +6,19 @@ document.addEventListener('DOMContentLoaded', () => {
   initMap();
 });
 
+
+
 function initMap() {
+  // Default location (if Geolocation fails)
   const defaultLocation = { lat: -34.397, lng: 150.644 };
 
+  // Create the map centered at the default location
   map = new google.maps.Map(document.getElementById('map'), {
     center: defaultLocation,
     zoom: 8
   });
 
+  // Check if Geolocation is supported by the browser
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       const currentLocation = {
@@ -21,8 +26,10 @@ function initMap() {
         lng: position.coords.longitude
       };
 
+      // Set the map's center to the current location
       map.setCenter(currentLocation);
 
+      // Optionally add a marker at the current location
       new google.maps.Marker({
         position: currentLocation,
         map: map,
@@ -35,14 +42,18 @@ function initMap() {
       };
 
       getNearBreweries(currentCoords);
+
     }, function() {
+      // Handle error if Geolocation fails
       handleLocationError(true, map.getCenter());
     });
   } else {
+    // Browser doesn't support Geolocation
     handleLocationError(false, map.getCenter());
   }
 }
 
+// Handle errors with Geolocation
 function handleLocationError(browserHasGeolocation, pos) {
   const infoWindow = new google.maps.InfoWindow({
     map: map
@@ -51,20 +62,6 @@ function handleLocationError(browserHasGeolocation, pos) {
   infoWindow.setContent(browserHasGeolocation ?
     'Error: The Geolocation service failed.' :
     'Error: Your browser doesn\'t support geolocation.');
-}
-
-async function getBreweryData(breweryId) {
-  try {
-    const response = await fetch(`/brewery/${breweryId}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    // Process the data as needed
-    console.log('Brewery data:', data);
-  } catch (err) {
-    console.error('Error fetching brewery data:', err);
-  }
 }
 
 async function getNearBreweries(currentCoords) {
@@ -83,12 +80,14 @@ async function getNearBreweries(currentCoords) {
 
     const data = await response.json();
 
+    // Clear existing infoWindows
     infoWindows.forEach(infoWindow => infoWindow.close());
     infoWindows = [];
     breweryMarkers.forEach(marker => marker.setMap(null));
     breweryMarkers = [];
 
-    for (const brewery of data.slice(0, 15)) {
+    // Create markers for each brewery
+    data.slice(0, 15).forEach(brewery => {
       const location = {
         lat: parseFloat(brewery.latitude),
         lng: parseFloat(brewery.longitude),
@@ -100,8 +99,6 @@ async function getNearBreweries(currentCoords) {
         title: brewery.name,
       });
 
-      const reviews = await getBreweryReviews(brewery.id);
-
       const infoWindow = new google.maps.InfoWindow({
         content: `
           <div>
@@ -112,9 +109,7 @@ async function getNearBreweries(currentCoords) {
             <p>Phone: ${brewery.phone}</p>
             <p>Website: <a href="${brewery.website_url}" target="_blank">${brewery.website_url}</a></p>
             <button class="review-button" data-brewery-id="${brewery.id}">Leave a Review</button>
-            <div class="reviews" data-review-id="${brewery.id}">
-              ${reviews.map(review => `<p><strong>${review.title}:</strong> ${review.content}</p>`).join('')}
-            </div>
+            <div class="reviews" data-review-id="${brewery.id}"></div>
           </div>
         `,
       });
@@ -122,13 +117,14 @@ async function getNearBreweries(currentCoords) {
       infoWindows.push(infoWindow);
       breweryMarkers.push(marker);
 
+      // Open info window on marker click
       marker.addListener('click', () => {
         closeAllInfoWindows();
         infoWindow.open(map, marker);
-        map.setZoom(10);
+        map.setZoom(10); // Adjust the zoom level as needed
         map.setCenter(marker.getPosition());
       });
-    }
+    });
 
     displayBreweriesList(data);
   } catch (err) {
@@ -136,28 +132,14 @@ async function getNearBreweries(currentCoords) {
   }
 }
 
-async function getBreweryReviews(breweryId) {
-  try {
-    const response = await fetch(`/api/brewery/${breweryId}`, {
-      method: 'GET',
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const brewery = await response.json();
-    //console.log(brewery, 'Brewery map.js:146'); 
-    console.log('reviews: ', brewery.blogs)
-    return 
-  } catch (err) {
-    console.error(`Error fetching reviews for brewery ${breweryId}:`, err);
-    return [];
-  }
-}
-
+// Function to display breweries list
 function displayBreweriesList(data) {
   const breweriesListContainer = document.getElementById('breweries-list-container');
+
+  // Clear previous list
   breweriesListContainer.innerHTML = '';
 
+  // Create list items for each brewery
   data.slice(0, 15).forEach(brewery => {
     const breweryInfo = document.createElement('div');
     breweryInfo.classList.add('brewery-info');
@@ -169,91 +151,104 @@ function displayBreweriesList(data) {
       <p>Phone: ${brewery.phone}</p>
       <p>Website: <a href="${brewery.website_url}" target="_blank">${brewery.website_url}</a></p>
       <button class="review-button" data-brewery-id="${brewery.id}">Leave a Review</button>
+    </div>
     `;
 
     breweryInfo.addEventListener('click', () => {
       const location = { lat: parseFloat(brewery.latitude), lng: parseFloat(brewery.longitude) };
-      const index = data.findIndex(b => b.name === brewery.name);
-      const breweryId = breweryInfo.getAttribute('data-brewery-id');
-      
+      const index = data.findIndex(b => b.name === brewery.name); // Find index of brewery in data array
       closeAllInfoWindows();
-      infoWindows[index].open(map, breweryMarkers[index]);
+      infoWindows[index].open(map, breweryMarkers[index]); // Open corresponding info window
       map.setZoom(10);
-      map.setCenter(location);
+      map.setCenter(location); // Center map to brewery location
     });
 
     breweriesListContainer.appendChild(breweryInfo);
   });
 }
 
+// Function to close all info windows
 function closeAllInfoWindows() {
   infoWindows.forEach(infoWindow => infoWindow.close());
 }
 
 async function leaveReview(breweryId, title, review) {
-  try {
-    const response = await fetch('/api/blogs', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        brewery_id: breweryId,
-        title: title,
-        content: review,
-      }),
-    });
+    try {
+        const response = await fetch('/api/blogs', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                breweryId: breweryId,
+                // rating: rating,
+                title: title,
+                content: review,
+            }),
+        });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Optionally, handle successful review submission (e.g., display a message)
+        console.log('Review submitted successfully!');
+    } catch (err) {
+        console.error('Error submitting review:', err);
     }
-
-    console.log('Review submitted successfully!');
-  } catch (err) {
-    console.error('Error submitting review:', err);
-  }
 }
 
 function openReviewModal(breweryId) {
-  const modal = document.getElementById('reviewModal');
-  const submitReviewButton = document.getElementById('submitReview');
+    const modal = document.getElementById('reviewModal');
+    const submitReviewButton = document.getElementById('submitReview');
 
-  modal.setAttribute('data-brewery-id', breweryId);
-  modal.style.display = 'block';
+    // Set the brewery ID in a data attribute of the modal
+    modal.setAttribute('data-brewery-id', breweryId);
 
-  submitReviewButton.addEventListener('click', () => {
-    const title = document.getElementById('title').value;
-    const review = document.getElementById('review').value;
+    // Show the modal
+    modal.style.display = 'block';
 
-    leaveReview(breweryId, title, review);
+    // Add event listener to the submit review button
+    submitReviewButton.addEventListener('click', () => {
+        //const rating = document.getElementById('rating').value;
+        const title = document.getElementById('title').value;
+        const review = document.getElementById('review').value;
 
-    modal.style.display = 'none';
+        // Submit the review
+        leaveReview(breweryId, title, review);
 
-    document.getElementById('title').value = '';
-    document.getElementById('review').value = '';
-  });
+        // Close the modal after submitting the review
+        modal.style.display = 'none';
+
+        // Clear input fields in the modal
+        //document.getElementById('rating').value = '';
+        document.getElementById('title').value = '';
+        document.getElementById('review').value = '';
+    });
 }
 
 document.getElementById('map').addEventListener('click', function(event) {
-  if (event.target.classList.contains('review-button')) {
-    const breweryId = event.target.getAttribute('data-brewery-id');
-    openReviewModal(breweryId);
-  } else if (event.target.classList.contains('brewery-info')) {
-    const breweryId = event.target.getAttribute('data-brewery-id');
-    getBreweryReviews(breweryId);
-  }
+    // Check if the clicked element is a review button
+    if (event.target.classList.contains('review-button')) {
+        // Get the brewery ID from the data attribute
+        const breweryId = event.target.getAttribute('data-brewery-id');
+        
+        // Open the review modal
+        openReviewModal(breweryId);
+    }
 });
 
-document.getElementById('breweries-list-container').addEventListener('click', function(event) {
-  if (event.target.classList.contains('brewery-info')) {
-    const breweryId = event.target.getAttribute('data-brewery-id');
-    getBreweryReviews(breweryId);
-  }
-})
 
 function closeReviewModal() {
-  const modal = document.getElementById('reviewModal');
-  modal.style.display = 'none';
+    const modal = document.getElementById('reviewModal');
+    modal.style.display = 'none';
 }
 
+// Event listener for the close button on the modal
 document.querySelector('.close').addEventListener('click', closeReviewModal);
+// var marker = new google.maps.Marker({
+//     position: location,
+//     map: map,
+//     title: 'Hello World!',  // Tooltip text
+//     icon: 'path_to_custom_icon.png'  // Custom icon
+//   })

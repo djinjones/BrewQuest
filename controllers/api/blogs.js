@@ -23,6 +23,7 @@ router.post('/', async (req, res) => {
     // res.render('homepage', {
     //     newPost, loggedIn: req.session.loggedIn, showDeleteButton: false,
     // })
+    res.status(200).json({ message: 'added review succesfully'})
     } else {
         res.render('login')
     }

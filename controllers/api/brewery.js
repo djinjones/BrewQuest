@@ -2,7 +2,8 @@ const router = require('express').Router();
 const fetch = require('node-fetch');
 const { Op } = require('sequelize');
 const { Sequelize } = require('sequelize');
-const Brewery = require('../../models/Brewery'); // Adjust the path to your model
+const { Brewery, BlogPost } = require('../../models'); // Adjust the path to your model
+require('dotenv').config();
 
 router.get('/', async (req, res) => {
   try {
@@ -70,13 +71,25 @@ router.get('/', async (req, res) => {
   
 
 router.get('/:id', async (req, res) => {
-    try {
-        const brewery = await Brewery.findByPk(req.params.id);
-        res.status(200).json(brewery);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: err.message});
-    };
+  try {
+    const user = await req.session.username;
+
+    const currentBrewery = await Brewery.findByPk(req.params.id, {
+      include: [{
+        model: BlogPost,
+        as: 'blogs',
+      }],
+      })
+      const posts = currentBrewery
+      
+      res.render('homepage', {
+        posts, user, showDeleteButton: false, loggedIn: req.session.loggedIn, apiKey: process.env.GOOGLE_MAPS_API_KEY,
+    
+    });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err.message });
+  }
 });
 
 router.post('/', async (req, res) => {
