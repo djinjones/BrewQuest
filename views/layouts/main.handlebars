@@ -58,6 +58,25 @@
 
   {{#if loggedIn}}
   <script src="/js/logout.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        // Listen for chat messages
+        socket.on('chatMessage', (msg) => {
+            console.log('New message:', msg);
+            // Update the chat section dynamically
+            const chatSection = document.getElementById('chat-section');
+            const newMessage = document.createElement('div');
+            newMessage.textContent = msg;
+            chatSection.appendChild(newMessage);
+        });
+
+        // Emit chat message event
+        function sendMessage(msg) {
+            socket.emit('chatMessage', msg);
+        }
+    </script>
   {{!-- <script src="/js/location.js"></script> --}}
   {{/if}}
 </body>
