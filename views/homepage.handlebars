@@ -1,10 +1,10 @@
+{{#if loggedIn}}
 <div id="map-container">
 <div id="map" class="brewery-map"></div>
 <div id="buttons-container" style="margin-top: 10px;"></div>
 <div id="breweries-list-container"></div>
 </div>
 <section style="display: flex; flex-direction: column; justify-content: center;">
-{{#if loggedIn}}
     <h4>Currently logged in as: {{user}}</h4>
   {{#if posts.length}}
     {{#each posts as |post|}}
