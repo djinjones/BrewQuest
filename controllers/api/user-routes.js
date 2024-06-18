@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const { User } = require('../../models');
 
-
 router.post('/', async (req, res) => {
   try {
     const dbUserData = await User.create({
@@ -14,6 +13,8 @@ router.post('/', async (req, res) => {
       req.session.loggedIn = true;
       req.session.username = req.body.username;
 
+      console.log('Session after registration:', req.session); // Debugging log
+
       res.status(200).json(dbUserData);
     });
   } catch (err) {
@@ -22,41 +23,34 @@ router.post('/', async (req, res) => {
   }
 });
 
-
 router.post('/login', async (req, res) => {
   try {
     const dbUserData = await User.findOne({
       where: {
         email: req.body.email,
       },
-      
     });
-    console.log(dbUserData);
-    const username = dbUserData.username;
+
     if (!dbUserData) {
-      res
-        .status(400)
-        .json({ message: 'Incorrect email or password.' });
+      res.status(400).json({ message: 'Incorrect email or password.' });
       return;
     }
 
     const validPassword = await dbUserData.checkPassword(req.body.password);
-    // check to see if the password is correct
     if (!validPassword) {
-      res
-        .status(400)
-        .json({ message: 'Incorrect email or password.' });
+      res.status(400).json({ message: 'Incorrect email or password.' });
       return;
     }
+
+    const username = dbUserData.username;
 
     req.session.save(() => {
       req.session.loggedIn = true;
       req.session.username = username;
-      console.log('user: ' + req.session.username);
 
-      res
-        .status(200)
-        .json({ user: dbUserData, message: 'You are now logged in!' });
+      console.log('Session after login:', req.session); // Debugging log
+
+      res.status(200).json({ user: dbUserData, message: 'You are now logged in!' });
     });
   } catch (err) {
     console.log(err);
@@ -64,7 +58,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// we use a post request for the logout because typically post requests are used for actions that result in a change in the server
 router.post('/logout', (req, res) => {
   if (req.session.loggedIn) {
     req.session.destroy(() => {

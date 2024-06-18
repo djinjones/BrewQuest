@@ -6,11 +6,13 @@ const socketHandler = (server) => {
 
         socket.on('joinChat', (username) => {
             socket.username = username;
+            console.log('User joined:', username); // Debugging log
             io.emit('chatMessage', `${username} has joined the chat`);
         });
 
         socket.on('chatMessage', (msg) => {
-            io.emit('chatMessage', `${socket.username}: ${msg}`);
+            console.log('Message received:', msg); // Debugging log
+            io.emit('chatMessage', msg); // Message already includes username
         });
 
         socket.on('disconnect', () => {
