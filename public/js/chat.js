@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const socket = io();
   
     // Prompt for username on joining the chat
-    const username = prompt('Enter your username');
     socket.emit('joinChat', username);
   
     // Listen for chat messages
