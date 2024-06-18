@@ -133,6 +133,11 @@ header {
   align-items: center;
 } */
 
+#new-post-card {
+  display: flex;
+  justify-content: center;
+}
+
 main {
   display: flex;
   flex-wrap: wrap;
