@@ -7,6 +7,7 @@
   <title>BrewQuest</title>
   <link rel="stylesheet" type="text/css" href="/css/jass.css">
   <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <link rel="stylesheet" type="text/css" href="/css/chat.css">
 </head>
 
 <body>
@@ -58,6 +59,10 @@
 
   {{#if loggedIn}}
   <script src="/js/logout.js"></script>
+  {{> chat}}
+  <script>
+   const username = "{{username}}"; 
+   </script>
   {{!-- <script src="/js/location.js"></script> --}}
   {{/if}}
 </body>

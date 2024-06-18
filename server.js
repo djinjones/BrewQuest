@@ -4,6 +4,8 @@ const session = require('express-session');
 const exphbs = require('express-handlebars');
 // Initializes Sequelize with session store
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const socketHandler = require('./utils/socketHandler'); // Import the socket handler
+
 
 const routes = require('./controllers');
 const sequelize = require('./config/connection');
@@ -11,6 +13,11 @@ const helpers = require('./utils/helpers');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+const http = require('http');
+const server = http.createServer(app);
+const io = socketHandler(server); // Pass the server instance to the socket handler
+
 
 const sess = {
   secret: 'very top secret',
@@ -41,8 +48,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(routes);
 
+
 sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () =>
+  server.listen(PORT, () =>
     console.log(
       `\nServer running on port ${PORT}. Visit http://localhost:${PORT} and post your first post!`
     )
