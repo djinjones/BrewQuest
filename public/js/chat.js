@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const socket = io();
-  
+
+    console.log('Username from window:', window.username);  
     // Prompt for username on joining the chat
-    socket.emit('joinChat', username);
+    socket.emit('joinChat', window.username);
   
     // Listen for chat messages
     socket.on('chatMessage', (msg) => {
@@ -17,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       const messageInput = document.getElementById('message-input');
       const message = messageInput.value;
-      socket.emit('chatMessage', message);
+      socket.emit('chatMessage', `${window.username}: ${message}`); // Include username in message
       messageInput.value = '';
     });
   
